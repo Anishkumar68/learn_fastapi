@@ -1,7 +1,7 @@
 from http.client import HTTPException
 
 from fastapi import FastAPI,status, Depends
-from app.models import Product, UserCreate, UserResponse
+from app.schema import Product, UserCreate, UserResponse
 
 app = FastAPI()
 users = [
