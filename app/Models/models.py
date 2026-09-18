@@ -30,5 +30,5 @@ class Comment(Base):
     id : Mapped[int] = mapped_column(Integer, index=True, primary_key=True)
     comment : Mapped[str] = mapped_column(String(1000), nullable=False)
     post_id : Mapped[int] = mapped_column(Integer, ForeignKey("posts.id"), index=True)  
-    reply_id : Mapped[int] = mapped_column(Integer, ForeignKey("comments.id"), index=True)
-    reply_to : Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("comments.id"), index= True, nullable = True)
+    reply_id : Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("comments.id"), index= True, nullable = True)
+    reply_to : Mapped[Optional["Comment"]] = relationship("Comment", remote_side=[id], backref="replies")
