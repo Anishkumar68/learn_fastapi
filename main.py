@@ -1,18 +1,20 @@
 from http.client import HTTPException
 
 from fastapi import FastAPI,status, Depends
-from app.schema import Product, UserCreate, UserResponse
+from app.schema.schema import Product, UserCreate, UserResponse
+from app.database import engine
+from app.Models.models import Base
 
 app = FastAPI()
-users = [
-    {"id" : 1, "name":"anish", "email": "anish@gmail.com"},
-    {"id" : 2, "name":"ak", "email": "ak@gmail.com"}
-]
+
+# this make sure the sqlalchemy models are created in the database
+Base.metadata.create_all(bind=engine)
+
 # routing
 # Get method  
-@app.get('/')
-def home():
-    return {"message": "hello world!"}
+# @app.get('/')
+# def home():
+#     return {"message": "hello world!"}
 
 # route url with parameters 
 # @app.get("/user/{userid}")
@@ -28,17 +30,17 @@ def home():
 #         "offset" : offset
 #     }
 
-@app.get("/products")
-# import pydantic class use dot to access the validation 
-def get_product(product:Product):
-    return {
-        "name": product.name,
-        "price": product.price,
-        "category": product.category
-    }
+# @app.get("/products")
+# # import pydantic class use dot to access the validation 
+# def get_product(product:Product):
+#     return {
+#         "name": product.name,
+#         "price": product.price,
+#         "category": product.category
+#     }
 
 
-@app.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+# @app.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 # def create_users(user:User):
 #     return {
 #         "Name" : user.name,
@@ -46,8 +48,8 @@ def get_product(product:Product):
 #         "age" : user.age
 #     }
 
-def create_user(user:UserCreate):
-    return user
+# def create_user(user:UserCreate):
+#     return user
 
 
 #http exception
@@ -60,20 +62,20 @@ def create_user(user:UserCreate):
             
 
 # delete user
-@app.delete("/delete/user/{userid}")
-def remove_user(userid:int):
-    for user in users:
-        if user["id"] ==userid:
-           user.remove(user)
-           return {"message": "user removed successfully"}
-    raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, details = "user Not found")
+# @app.delete("/delete/user/{userid}")
+# def remove_user(userid:int):
+#     for user in users:
+#         if user["id"] ==userid:
+#            user.remove(user)
+#            return {"message": "user removed successfully"}
+#     raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, details = "user Not found")
 
-def get_user():
-    return {
-        "username": "ak",
-        "email": "anish@gmail.com"
-    }
-# depends 
-@app.get("/current/user")
-def get_current_user(user = Depends(get_user)):
-    return user
+# def get_user():
+#     return {
+#         "username": "ak",
+#         "email": "anish@gmail.com"
+#     }
+# # depends 
+# @app.get("/current/user")
+# def get_current_user(user = Depends(get_user)):
+#     return user
