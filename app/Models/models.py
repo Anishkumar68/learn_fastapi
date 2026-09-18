@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, String, Float, DateTime
 
@@ -13,7 +15,7 @@ class User(Base):
     posts : Mapped[list["Post"]] = relationship(back_populates="owner")
 
 class Post(Base):
-    __tablename__ = "post"
+    __tablename__ = "posts"
 
     id : Mapped[int] = mapped_column(Integer, index=True)
     post_tile : Mapped[str] = mapped_column(String(100), nullable=False)
@@ -22,10 +24,11 @@ class Post(Base):
     owner_id : Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
     owner : Mapped["User"] = relationship(back_populates="posts")
 
-class Comments(Base):
+class Comment(Base):
     __tablename__ = "comments"
 
-    id : Mapped[int] = mapped_column(Integer, index=True)
+    id : Mapped[int] = mapped_column(Integer, index=True, primary_key=True)
     comment : Mapped[str] = mapped_column(String(1000), nullable=False)
-    post_id : Mapped[int] = mapped_column(Integer, ForeignKey("post.id"), index=True)  
+    post_id : Mapped[int] = mapped_column(Integer, ForeignKey("posts.id"), index=True)  
     reply_id : Mapped[int] = mapped_column(Integer, ForeignKey("comments.id"), index=True)
+    reply_to : Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("comments.id"), index= True, nullable = True)
