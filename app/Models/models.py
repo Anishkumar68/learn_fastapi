@@ -21,7 +21,8 @@ class Post(Base):
     post_tile : Mapped[str] = mapped_column(String(100), nullable=False)
     description : Mapped[str] = mapped_column(String(100))
     context : Mapped[str] = mapped_column(String(1000))
-    owner_id : Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
+    auther_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
+    date_posted:Mapped[DateTime] = mapped_column(DateTime, nullable=False)
     owner : Mapped["User"] = relationship(back_populates="posts")
 
 class Comment(Base):

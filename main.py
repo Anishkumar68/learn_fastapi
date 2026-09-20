@@ -1,9 +1,15 @@
 from http.client import HTTPException
-
+import select
 from fastapi import FastAPI,status, Depends
+from sqlalchemy.orm import Session
+
+# project imports 
+from app.Models import models
+from app.schema import schema
 from app.schema.schema import Product, UserCreate, UserResponse
-from app.database import engine
+from app.database import engine, get_db
 from app.Models.models import Base
+
 
 app = FastAPI()
 
@@ -79,3 +85,12 @@ Base.metadata.create_all(bind=engine)
 # @app.get("/current/user")
 # def get_current_user(user = Depends(get_user)):
 #     return user
+
+
+
+# get single post
+#response_model means that will provide output, for that we created a pydantic schema 
+# so we import that its name is schema(the file ).(for access we are using dot)PostResponse(the output provider class)
+@app.get("/posts/{postid}",response_model=schema.PostResponse)
+def get_post(post_id:int, db:Session = Depends(get_db)):
+    stmt = select(models.Post).where(models.Post.id==post_id)

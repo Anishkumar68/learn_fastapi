@@ -1,32 +1,16 @@
-from pydantic import BaseModel, ConfigDict
+import datetime
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from app.database import Base
 
-
-class Product(BaseModel):
-    name:str
-    price:float
-    category:str
-
-
-class UserCreate(BaseModel):
-    name:str
-    email:str
+class User(BaseModel):
+    user_name:str
+    email:EmailStr
     password:str
 
 class UserResponse(BaseModel):
-    user:str
+    user_name:str
     email:str
 
-
-class PostCreate(BaseModel):
-    post_title:str
-    description:str
-    context:str
-
-class PostResponse(BaseModel):
-    post_title:str
-    description:str
-    context:str
-    owner_id:int
-
-    model_config = ConfigDict(from_attributes=True)
-    # (Note: from_attributes=True is the most important line here. It tells Pydantic, "Hey, I'm passing you a SQLAlchemy database object, not a dictionary. Read its attributes like post.id instead of post['id']".)
+class PostBase(BaseModel):
+    title:str=Field(min_length=1, max_length=100)
+    email:EmailStr = Field(max_length=120)
