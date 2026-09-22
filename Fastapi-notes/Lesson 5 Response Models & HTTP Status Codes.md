@@ -1,6 +1,3 @@
-## Lesson 5 — Response Models & HTTP Status Codes
-
-We've learned how data **comes into** the API. Now learn how we control what **goes out**.
 
 ### 1. Response Model
 

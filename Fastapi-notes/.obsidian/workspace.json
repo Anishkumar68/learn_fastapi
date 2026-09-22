@@ -76,9 +76,37 @@
               "icon": "lucide-file",
               "title": "Lesson 12 DB.get() vs DB.execute()"
             }
+          },
+          {
+            "id": "a3faf6b93e90646b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Middle stop.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Middle stop"
+            }
+          },
+          {
+            "id": "23c18249d355f9fa",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Lesson 13 Sync & Async.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Lesson 13 Sync & Async"
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 6
       }
     ],
     "direction": "vertical"
@@ -245,17 +273,19 @@
       "bases:Create new base": false
     }
   },
-  "active": "f86bd1a1dc1cf58e",
+  "active": "30fcf1f8faecbf7a",
   "lastOpenFiles": [
-    "Lesson 1 Production Architecture.md",
     "Lesson 12 DB.get() vs DB.execute().md",
-    "Lesson 9 Schema.py.md",
-    "Lesson 10 Annotated.md",
     "Lesson 11 Routing.md",
+    "Lesson 10 Annotated.md",
+    "Lesson 9 Schema.py.md",
     "Lesson 8 - Database tables ORM.md",
-    "Lesson 6: Error_Handling.md",
-    "Lesson 7 : database.md",
-    "lesson 4: response.md",
+    "Lesson 7 Database.md",
+    "Lesson 6 Error_Handling.md",
+    "Lesson 5 Response Models & HTTP Status Codes.md",
+    "Lesson 13 Sync & Async.md",
+    "Middle stop.md",
+    "Lesson 1 Production Architecture.md",
     "Welcome.md"
   ]
 }

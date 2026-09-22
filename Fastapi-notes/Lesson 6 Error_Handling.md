@@ -1,6 +1,3 @@
-Good. Now **Lesson 6 — Error Handling with `HTTPException`**.
-
-This is where your API starts behaving like a real API instead of simply returning data.
 
 ## 1. The problem
 
