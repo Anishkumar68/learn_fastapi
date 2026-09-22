@@ -1,8 +1,3 @@
-Great question. `Annotated` is one of those concepts that looks confusing at first but actually makes your life *much* easier once it clicks.
-
-Let me build up to it step by step.
-
----
 
 ### The Problem `Annotated` Solves
 
