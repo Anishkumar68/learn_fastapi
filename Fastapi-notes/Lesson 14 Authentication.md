@@ -1,0 +1,1 @@
+**Topic 1:** Password Hashing with pwdlib[argon2] (what we're doing now) **Topic 2:** Configuration Management with pydantic-settings **Topic 3:** JWT Token Creation & Validation with pyjwt **Topic 4:** The Login Endpoint **Topic 5:** The get_current_user Dependency **Topic 6:** Protecting Routes **Topic 7:** Authorization Checks
