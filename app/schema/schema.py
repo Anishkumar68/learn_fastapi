@@ -1,25 +1,21 @@
 import datetime
 from enum import unique
+from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from rich.prompt import password
 from app.database import Base
 
 class UserBase(BaseModel):
     username:str=Field(min_length = 5, max_length=50)
-    email : EmailStr = Field(max_length = 150)
-
-class User(UserBase):
-   id : int = Field(primary_key=True)
-   username : str = Field(min_length=5, max_length=50)
-   email : EmailStr = Field(max_length=150)
-   password : str = Field(min_length=8, max_length=255, unique=True)
-   user_created_at : datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    email : EmailStr 
+class Usercreate(UserBase):
+    password:str=Field(min_length=6, max_length=255)
 
 class UserResponse(BaseModel):
     id : int
     username:str
-    img_file : str | None
-    img_path : str
+    img_file : Optional[str] | None 
+    img_path : Optional[str] | None
     email : EmailStr
     model_config = ConfigDict(from_attributes = True)
 
@@ -32,11 +28,11 @@ class Userprivate(BaseModel):
     email:EmailStr
 
 class Userupdate(BaseModel):
-    username:str
-    email:EmailStr
+    username:str| None = Field(default=None, min_length=5, max_length=50)
+    email:EmailStr | None 
     img_file:str|None
     img_path:str|None
-    password : str|None
+    password : str|None = Field(default=None, min_length=6, max_length=255)
 
 # schema for posts
 class PostBase(BaseModel):
@@ -44,10 +40,7 @@ class PostBase(BaseModel):
     email:EmailStr = Field(max_length=120)
 
 class PostCreate(PostBase):
-    user_id:int
-    content : str
-    title : str
-    
+    pass 
 class PostResponse(PostBase):
     model_config = ConfigDict(from_attributes=True)
     id :int
