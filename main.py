@@ -1,13 +1,13 @@
 from typing import Annotated
 
 from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.Models import models
+from app.auth import auth
 from app.database import engine, get_db
 from app.Models.models import Base
-from app.routes import posts
-from app.routes import users
+from app.routes import posts, user, auth
 
 app = FastAPI()
 
@@ -18,11 +18,10 @@ Base.metadata.create_all(bind=engine)
 
 # Instead of writing duplicate session code, we use Annotated + Depends
 # to get the session from the get_db function.
-DBsession = Annotated[Session, Depends(get_db)]
-
+DBsession = Annotated[AsyncSession, Depends(get_db)]
 
 app.include_router(
-    router=users.router,
+    router=user.router,
     prefix="/api/users",
     tags=["users"]
 )
@@ -33,12 +32,7 @@ app.include_router(
     tags=["posts"]
 )
 
-app.include_router(
-    router=auth.router,
-    prefix="/api/users",
-    tags=["auth"]
-)
-
+app.include_router(router=auth.router, prefix="/api/token", tags=["token"])
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,14 +1,24 @@
 from datetime import UTC, timedelta, datetime
+import select
+from typing import Annotated
+from fastapi import Depends, HTTPException
 import jwt 
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
+from starlette import status
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from app.database import get_db
 from config import settings
+from sqlalchemy.orm import 
+from sqlalchemy.ext.asyncio import AsyncSession
+from Models.models import User
 
 # Explicit PasswordHash initialization:
 password_hash = PasswordHash.recommended()
 
 # Token endpoint
-oauth_password = OAuth2PasswordBearer(tokenUrl="api/users/token")
+oauth_schema = OAuth2PasswordBearer(tokenUrl="api/users/token")
+DBsession = Annotated[AsyncSession, Depends(get_db)]
 
 def hash_password(password:str):
     return password_hash.hash(password)
@@ -36,19 +46,6 @@ def create_access_token(data:dict, expires_delta:timedelta | None=None)->str:
 
     return encoded_jwt
 
-
-def create_access(data:dict, expire_delta:timedelta):
-    to_encode = data.copy()
-    if not expire_delta:
-        expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE)
-    else:
-        expire = datetime.now(UTC) + expire_delta
-
-    to_encode.update({"exp":expire})
-    jwt_encode = jwt.encode(to_encode, settings.SECRET_KEY.get_secret_value(),algorithm=settings.algorithm)
-    return jwt_encode
-
-
 def verify_access_token(token:str):
     try:
         payload = jwt.decode(
@@ -61,3 +58,8 @@ def verify_access_token(token:str):
         return None
     else:
         return payload.get('sub')
+
+def get_current_user(token:Annotated[str,Depends(oauth_schema)], db:DBsession):
+    credentials_exception = StarletteHTTPException( status_code= status.HTTP_401_UNAUTHORIZED, detail="Unauthorized access", headers= {"WWW-Authenticate" : "Bearer"})
+
+    result = db.execute(select(User).where(func(User.username) == ))

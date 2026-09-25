@@ -2,40 +2,47 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from sqlalchemy import func, select
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from Starlette.exceptions import HTTPException as StarletteHTTPException
-
-
+from auth import (create_access_token,hash_password, verify_password, verify_access_token, oauth_password)
 from Models import models
-from schema import schema
+from schema.schema import UserBase,Usercreate,Userprivate,Userpublic,UserResponse,Userupdate
+
 from database import get_db
 
+from config import settings
+
+
+from app.User.token import login_for_accerss_token
 
 router = APIRouter()
 
 
 # Dependency for database session
-DBsession = Annotated[Session, Depends(get_db)]
+DBsession = Annotated[AsyncSession, Depends(get_db)]
 
 
 
 # CREATE USER
 @router.post(
     "/users",
-    response_model=schema.UserResponse,
+    response_model= Userprivate,
     status_code=status.HTTP_201_CREATED
 )
-def create_user(
-    user: schema.UserCreate,
+async def create_user(
+    user: Usercreate,
     db: DBsession
 ):
 
     # Check whether username already exists
-    result = db.execute(
+    result = await db.execute(
         select(models.User).where(
-            models.User.username == user.name
+           func.lower( models.User.username) == user.name.lower(),
         )
     )
 
@@ -43,8 +50,8 @@ def create_user(
 
     # Check whether email already exists
     result = db.execute(
-        select(models.User).where(
-            models.User.email == user.email
+        select(models.User).where(func.lower(
+            models.User.email) == user.email.lower()
         )
     )
 
@@ -59,8 +66,9 @@ def create_user(
     # Convert Pydantic schema to SQLAlchemy model
     new_user = models.User(
         username=user.name,
-        email=user.email
+        email=user.email.lower(),
         # Add other fields here if your User model has them
+        password_hash = hash_password(user.password)
     )
 
     db.add(new_user)
@@ -73,7 +81,7 @@ def create_user(
 # Get single user
 @router.get(
     "/user/{userid}",
-    response_model=schema.UserResponse
+    response_model=UserResponse
 )
 def get_user(
     userid: int,
