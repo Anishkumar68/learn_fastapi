@@ -9,7 +9,7 @@ from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.database import get_db
 from config import settings
-from sqlalchemy.orm import 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from Models.models import User
 
@@ -62,4 +62,24 @@ def verify_access_token(token:str):
 def get_current_user(token:Annotated[str,Depends(oauth_schema)], db:DBsession):
     credentials_exception = StarletteHTTPException( status_code= status.HTTP_401_UNAUTHORIZED, detail="Unauthorized access", headers= {"WWW-Authenticate" : "Bearer"})
 
-    result = db.execute(select(User).where(func(User.username) == ))
+    try:
+
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY.get_secret_value(),
+            algorithms=[settings.algorithm]
+        )
+        username: str=payload.get("sub")
+        if username == None:
+            raise credentials_exception
+ 
+    except jwt.PyJWTError:
+        raise credentials_exception
+
+    result = db.execute(select(User).where(func.lower(User.username) == username))
+    user = result.scalars().first()
+
+    if user == None:
+        raise credentials_exception
+    
+    return user
